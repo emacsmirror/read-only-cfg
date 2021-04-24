@@ -24,12 +24,12 @@
 ;;; Commentary:
 ;;
 ;; `read-only-cf' is a GNU Emacs minor mode which can automatically make
-;;  files read-only based on user configuration. User configuration is
+;;  files read-only based on user configuration.  User configuration is
 ;;  very simple and it consists of prefix directories or regex patterns.
 
 ;; Installation
 ;;
-;; The package is available on `MELPA'. To use the `MELPA' repository,
+;; The package is available on `MELPA'.  To use the `MELPA' repository,
 ;; you can add the following codes to your init.el.
 ;;
 ;;     (require 'package)
@@ -123,7 +123,7 @@ Default is non-nil."
     (error (message (error-message-string err)) nil)))
 
 (defun read-only-cf--match-dirs-p (file-name)
-  "Return non-nil if FILE-NAME matches user defined prefix directories."
+  "Return non-nil if FILE-NAME matched user defined prefix directories."
   (catch 'done
     (dolist (dir read-only-cf-dirs)
       (when (string-prefix-p dir (file-name-as-directory file-name))
@@ -131,7 +131,7 @@ Default is non-nil."
     nil))
 
 (defun read-only-cf--match-regexps-p (file-name)
-  "Return non-nil if FILE-NAME matches user defined regex patterns."
+  "Return non-nil if FILE-NAME matched user defined regex patterns."
   (catch 'done
     (dolist (regexp read-only-cf-regexps)
       (when (string-match-p regexp file-name)
@@ -139,19 +139,19 @@ Default is non-nil."
     nil))
 
 (defun read-only-cf--match-p (file-name)
-  "Return non-nil if FILE-NAME matches user defined config."
+  "Return non-nil if FILE-NAME matched user defined config."
   (if (or (read-only-cf--match-dirs-p file-name)
           (read-only-cf--match-regexps-p file-name))
       t
     nil))
 
 (defun read-only-cf--find-file-handler ()
-  "A read-only handler of find-file-hook."
+  "A read-only handler of `find-file-hook'."
   (when (read-only-cf--match-p (buffer-file-name))
     (read-only-mode 1)))
 
 (defun read-only-cf--update-buffers (v)
-  "Update the read-only state of existing file buffers."
+  "Update the read-only state of existing file buffers with value V."
   (when read-only-cf-update-file-buffer-state
     (dolist (buf (buffer-list))
       (when (and (buffer-file-name buf)
