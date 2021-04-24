@@ -84,23 +84,23 @@
 ;; Customization
 ;;
 ;; Customize variable `read-only-cf-update-file-buffer-state' to
-;; determine whether update the read-only state of all existing
+;; determine whether to update the read-only state of all existing
 ;; file-buffer when this mode is enabled or disabled.
 
 ;;; Code:
 (defgroup read-only-cf nil
   "Make files read-only based on config."
   :prefix "read-only-cf-"
-  :group 'find-file)
+  :group 'files)
 
 (defcustom read-only-cf-dirs
-  (list (file-name-as-directory (expand-file-name "elpa" user-emacs-directory)))
+  ()
   "List of all user defined read-only directories."
   :type '(repeat (string :tag "Read-only directory"))
   :group 'read-only-cf)
 
 (defcustom read-only-cf-regexps
-  (list "\\.git/?")
+  ()
   "List of all user defined read-only regex patterns."
   :type '(repeat (regexp :tag "Read-only regex pattern"))
   :group 'read-only-cf)

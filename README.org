@@ -74,5 +74,5 @@
 ** Customization
 
   Customize variable ~read-only-cf-update-file-buffer-state~ to
-  determine whether update the read-only state of all existing
+  determine whether to update the read-only state of all existing
   file-buffer when this mode is enabled or disabled.
