@@ -191,7 +191,7 @@ Default is non-nil."
   "Remove a read-only regex pattern REGEXP."
   (interactive "sRead-only regex pattern: ")
   (if (and (read-only-cf--regexp-valid-p regexp)
-           (member regexp read-only-cf-dirs))
+           (member regexp read-only-cf-regexps))
       (progn
 	(setq read-only-cf-dirs (delete regexp read-only-cf-regexps))
 	(message "Removed a read-only regex pattern: %s" regexp))
