@@ -193,7 +193,7 @@ Default is non-nil."
   (if (and (read-only-cf--regexp-valid-p regexp)
            (member regexp read-only-cf-regexps))
       (progn
-	(setq read-only-cf-dirs (delete regexp read-only-cf-regexps))
+	(setq read-only-cf-regexps (delete regexp read-only-cf-regexps))
 	(message "Removed a read-only regex pattern: %s" regexp))
     (error "%S is not in read-only regex pattern list" regexp)))
 
