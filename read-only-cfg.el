@@ -200,7 +200,7 @@ Default is non-nil."
 ;;;###autoload
 (define-minor-mode read-only-cfg-mode
   "Minor mode for making files read-only based on config."
-  nil " RoCf" nil
+  nil " RoCfg" nil
   :global t
   (if read-only-cfg-mode
       (progn
