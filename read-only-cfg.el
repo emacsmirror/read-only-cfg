@@ -22,13 +22,13 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;
+
 ;; `read-only-cfg' is a GNU Emacs minor mode which can automatically make
 ;;  files read-only based on user configuration.  User configuration is
 ;;  very simple and it consists of prefix directories or regex patterns.
 
 ;; Installation
-;;
+
 ;; The package is available on `MELPA'.  To use the `MELPA' repository,
 ;; you can add the following codes to your init.el.
 ;;
@@ -57,7 +57,7 @@
 ;;     (read-only-cfg-mode 1)
 
 ;; Usage
-;;
+
 ;; Add a read-only directory:
 ;;
 ;;     M-x read-only-cfg-add-dir RET /path/to/you-directory RET
@@ -80,9 +80,9 @@
 ;;
 ;;     M-x read-only-cfg-remove-regexp RET <regexp> RET
 ;;
-;;
+
 ;; Customization
-;;
+
 ;; Customize variable `read-only-cfg-update-file-buffer-state' to
 ;; determine whether to update the read-only state of all existing
 ;; file-buffer when this mode is enabled or disabled.
