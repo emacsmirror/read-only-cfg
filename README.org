@@ -2,6 +2,8 @@
 #+AUTHOR: pfchen
 #+DATE: <2021-04-23 Fri>
 
+
+
 * Introduction
 
   ~read-only-cfg~ is a GNU Emacs minor mode that can automatically make
@@ -10,7 +12,7 @@
 
 * Installation
 
-** MELPA
+** MELPA [[https://melpa.org/#/read-only-cfg][file:https://melpa.org/packages/read-only-cfg-badge.svg]]
 
    The package is available on ~MELPA~. To use the ~MELPA~ repository,
    you can add the following codes to your init.el.
