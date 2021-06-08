@@ -23,9 +23,9 @@
 
 ;;; Commentary:
 
-;; `read-only-cfg' is a GNU Emacs minor mode which can automatically make
+;; `read-only-cfg' is a GNU Emacs minor mode that can automatically make
 ;;  files read-only based on user configuration.  User configuration is
-;;  very simple and it consists of prefix directories or regex patterns.
+;;  very simple and only consists of prefix directories or regex patterns.
 
 ;; Installation
 
@@ -159,13 +159,54 @@ Default is non-nil."
         (with-current-buffer buf
           (read-only-mode v))))))
 
+(defun read-only-cfg--delay-saving-handler ()
+  "A handler is used to save config outside Customize for future session.
+The main reason for using this handler to delay saving config is to avoid
+conflicts with Customize which will automatically insert
+`custom-set-variables' in the init file.  If we don't that, our previous
+config will be overwritten by`custom-set-variables'."
+  (let ((delay-saving-dirs (get 'read-only-cfg-dirs 'delay-saving-items))
+        (delay-saving-regexps (get 'read-only-cfg-regexps 'delay-saving-items)))
+    ;; Add or remove delay-saving dirs
+    (dolist (pair (reverse delay-saving-dirs))
+      (if (equal (car pair) "add")
+          (add-to-list 'read-only-cfg-dirs (cdr pair))
+        (setq read-only-cfg-dirs (delete (cdr pair) read-only-cfg-dirs))))
+    ;; Add or remove delay-saving regexps
+    (dolist (pair (reverse delay-saving-regexps))
+      (if (equal (car pair) "add")
+          (add-to-list 'read-only-cfg-regexps (cdr pair))
+        (setq read-only-cfg-regexps (delete (cdr pair) read-only-cfg-regexps))))
+    ;; Save to custom-file
+    (when delay-saving-dirs
+      (customize-save-variable 'read-only-cfg-dirs read-only-cfg-dirs))
+    (when delay-saving-regexps
+      (customize-save-variable 'read-only-cfg-regexps read-only-cfg-regexps))
+    ;; Reset
+    (put 'read-only-cfg-dirs 'delay-saving-items nil)
+    (put 'read-only-cfg-regexps 'delay-saving-items nil)))
+
+(add-hook 'emacs-startup-hook #'read-only-cfg--delay-saving-handler)
+
+(defun read-only-cfg--add-delay-saving-item (symbol action item)
+  "Add a delay-saving ITEM with ACTION into SYMBOL properties section."
+  (let ((pair (cons action item))
+        (delay-saving-items (get symbol 'delay-saving-items)))
+    (unless (member pair delay-saving-items)
+      (put symbol 'delay-saving-items
+           (push pair delay-saving-items)))))
+
 ;;;###autoload
 (defun read-only-cfg-add-dir (dir)
   "Add a read-only directory DIR."
   (interactive "DRead-only directory: ")
   (let ((dir (file-name-as-directory (file-truename dir))))
     (add-to-list 'read-only-cfg-dirs dir)
-    (message "Added a read-only directory: %s" dir)))
+    (if (called-interactively-p 'any)
+        (progn
+          (customize-save-variable 'read-only-cfg-dirs read-only-cfg-dirs)
+          (message "Added a read-only directory: %s" dir))
+      (read-only-cfg--add-delay-saving-item 'read-only-cfg-dirs "add" dir))))
 
 ;;;###autoload
 (defun read-only-cfg-add-regexp (regexp)
@@ -173,7 +214,11 @@ Default is non-nil."
   (interactive "sRead-only regex pattern: ")
   (when (read-only-cfg--regexp-valid-p regexp)
     (add-to-list 'read-only-cfg-regexps regexp)
-    (message "Added a regex pattern: %s" regexp)))
+    (if (called-interactively-p 'any)
+        (progn
+          (customize-save-variable 'read-only-cfg-regexps read-only-cfg-regexps)
+          (message "Added a regex pattern: %s" regexp))
+      (read-only-cfg--add-delay-saving-item 'read-only-cfg-regexps "add" regexp))))
 
 ;;;###autoload
 (defun read-only-cfg-remove-dir (dir)
@@ -183,7 +228,11 @@ Default is non-nil."
     (if (member dir read-only-cfg-dirs)
 	(progn
 	  (setq read-only-cfg-dirs (delete dir read-only-cfg-dirs))
-	  (message "Removed a read-only directory: %s" dir))
+          (if (called-interactively-p 'any)
+              (progn
+                (customize-save-variable 'read-only-cfg-dirs read-only-cfg-dirs)
+	        (message "Removed a read-only directory: %s" dir))
+            (read-only-cfg--add-delay-saving-item 'read-only-cfg-dirs "remove" dir)))
       (error "%S is not in read-only directory list" dir))))
 
 ;;;###autoload
@@ -194,7 +243,11 @@ Default is non-nil."
            (member regexp read-only-cfg-regexps))
       (progn
 	(setq read-only-cfg-regexps (delete regexp read-only-cfg-regexps))
-	(message "Removed a read-only regex pattern: %s" regexp))
+        (if (called-interactively-p 'any)
+            (progn
+              (customize-save-variable 'read-only-cfg-regexps read-only-cfg-regexps)
+	      (message "Removed a read-only regex pattern: %s" regexp))
+          (read-only-cfg--add-delay-saving-item 'read-only-cfg-regexps "remove" regexp)))
     (error "%S is not in read-only regex pattern list" regexp)))
 
 ;;;###autoload
