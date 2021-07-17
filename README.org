@@ -3,7 +3,6 @@
 #+DATE: <2021-04-23 Fri>
 
 
-
 * Introduction
 
   ~read-only-cfg~ is a GNU Emacs minor mode that can automatically make
@@ -51,7 +50,7 @@
     M-x read-only-cfg-add-dir RET /path/to/your-directory RET
   #+END_SRC
 
-  Add a read-only regex regex pattern:
+  Add a read-only regex pattern:
   #+BEGIN_SRC elisp
     M-x read-only-cfg-add-regexp RET <regexp> RET
   #+END_SRC
